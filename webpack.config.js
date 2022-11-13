@@ -1,24 +1,36 @@
-const path = require('path');
-const webpack = require('webpack');
-require('dotenv').config();
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require("dotenv-webpack");
+
 const CONFIG = {
-  mode: 'development',
+  mode: "development",
 
   entry: {
-    app: './src/app.js'
+    app: "./src/app.js",
   },
+  
+  output: {
+    filename: 'bundle.js'
+  },
+
   devServer: {
     static: {
-      directory: path.join(__dirname, 'src'),
-    }
+      directory: path.join(__dirname, "src"),
+    },
   },
 
   plugins: [
-    new webpack.EnvironmentPlugin({
-      'GoogleMapsAPIKey': process.env.GOOGLE_MAPS_API_KEY
-    })
-  ]
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+      filename: 'index.html',
+      inject: 'body'
+    }),
+    new Dotenv({
+      path: "./.env",
+      safe: true,
+    }),
+  ],
 };
 
-// This line enables bundling against src in this repo rather than installed module
 module.exports = CONFIG;
