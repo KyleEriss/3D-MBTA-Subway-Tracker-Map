@@ -72,7 +72,7 @@ function loadSceneOnAddedVehicle(compassBearing, scene, scenes, objectSource) {
     scene[index].add(directionalLight);
 
     loader.load(objectSource, (gltf) => {
-      gltf.scene.scale.set(90, 150, 90);
+      gltf.scene.scale.set(25, 25, 25);
       gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
       gltf.scene.rotation.z = (compassBearing[index] * Math.PI) / 180;
       scene[index].add(gltf.scene);
@@ -481,7 +481,7 @@ async function initWebGLOverlayView(map) {
       sceneRed[i].add(directionalLightRed);
 
       loader.load(sourceRed, (gltf) => {
-        gltf.scene.scale.set(30, 90, 30);
+        gltf.scene.scale.set(25, 25, 25);
         gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
         gltf.scene.rotation.z = (compassBearingRed[i] * Math.PI) / 180;
         sceneRed[i].add(gltf.scene);
@@ -498,7 +498,7 @@ async function initWebGLOverlayView(map) {
       sceneGreen[i].add(directionalLightGreen);
 
       loader.load(sourceGreen, (gltf) => {
-        gltf.scene.scale.set(30, 90, 30);
+        gltf.scene.scale.set(25, 25, 25);
         gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
         gltf.scene.rotation.z = (compassBearingGreen[i] * Math.PI) / 180;
         sceneGreen[i].add(gltf.scene);
@@ -515,7 +515,7 @@ async function initWebGLOverlayView(map) {
       sceneBlue[i].add(directionalLightBlue);
 
       loader.load(sourceBlue, (gltf) => {
-        gltf.scene.scale.set(30, 90, 30);
+        gltf.scene.scale.set(25, 25, 25);
         gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
         gltf.scene.rotation.z = (compassBearingBlue[i] * Math.PI) / 180;
         sceneBlue[i].add(gltf.scene);
@@ -532,7 +532,7 @@ async function initWebGLOverlayView(map) {
       sceneOrange[i].add(directionalLightOrange);
 
       loader.load(sourceOrange, (gltf) => {
-        gltf.scene.scale.set(30, 90, 30);
+        gltf.scene.scale.set(25, 25, 25);
         gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
         gltf.scene.rotation.z = (compassBearingOrange[i] * Math.PI) / 180;
         sceneOrange[i].add(gltf.scene);
@@ -549,7 +549,7 @@ async function initWebGLOverlayView(map) {
       scenePurple[i].add(directionalLightPurple);
 
       loader.load(sourcePurple, (gltf) => {
-        gltf.scene.scale.set(30, 90, 30);
+        gltf.scene.scale.set(25, 25, 25);
         gltf.scene.rotation.x = (180 * Math.PI) / 180; // rotations are in radians
         gltf.scene.rotation.z = (compassBearingPurple[i] * Math.PI) / 180;
         scenePurple[i].add(gltf.scene);
