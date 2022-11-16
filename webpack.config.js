@@ -11,7 +11,7 @@ const CONFIG = {
   },
   
   output: {
-    filename: 'bundle.js'
+    filename: 'app.js'
   },
 
   devServer: {
