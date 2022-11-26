@@ -1,6 +1,3 @@
-import * as THREE from "three";
-import TransitType from "./TransitType";
-
 class VehicleMarker {
   camera;
   compassBearing;
