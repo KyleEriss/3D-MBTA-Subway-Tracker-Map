@@ -1,18 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-async function getAllSubwayCars() {
-    const response = await fetch("https://api-v3.mbta.com/vehicles?api_key=83a6a62eca054340b3c58d7c8bfe5e2c")
-        .then((response) => response.json())
-        .then((data) => data.data);
-    if (Array.isArray(response)) {
-        const subways = response.map((subway) => ({
-            bearing: subway.attributes.bearing,
-            id: subway.id,
-            latitude: subway.attributes.latitude,
-            longitude: subway.attributes.longitude,
-        }));
-        return subways;
-    }
-    return;
+exports.getAllVehiclesEventSource = void 0;
+const EventSource = require('eventsource');
+async function getAllVehiclesEventSource() {
+    let vehiclesEventSource = new EventSource(`https://api-v3.mbta.com/vehicles?api_key=${process.env.MBTA_API_KEY}`);
+    return vehiclesEventSource;
 }
-exports.default = getAllSubwayCars;
+exports.getAllVehiclesEventSource = getAllVehiclesEventSource;
+// const response = await fetch(
+//   `https://api-v3.mbta.com/vehicles?api_key=${process.env.MBTA_API_KEY}`
+// )
+//   .then((response) => response.json())
+//   .then((data) => data.data);
+// if (Array.isArray(response)) {
+//   const subways: SubwayCars = response.map((subway) => ({
+//     bearing: subway.attributes.bearing,
+//     id: subway.id,
+//     latitude: subway.attributes.latitude,
+//     longitude: subway.attributes.longitude,
+//   }));
+//   return subways;
+// }
+// return;
