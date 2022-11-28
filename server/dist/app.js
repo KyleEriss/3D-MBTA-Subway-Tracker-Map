@@ -12,3 +12,4 @@ const app = (0, express_1.default)();
 app.use(cors());
 app.use('/subway', routes_1.default);
 app.listen(PORT);
+//# sourceMappingURL=app.js.map

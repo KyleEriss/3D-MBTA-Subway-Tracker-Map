@@ -38,3 +38,4 @@ const GetAllSubwayCars = async (req, res, next) => {
     }, 2000);
 };
 exports.GetAllSubwayCars = GetAllSubwayCars;
+//# sourceMappingURL=GetAllSubwayCars.js.map

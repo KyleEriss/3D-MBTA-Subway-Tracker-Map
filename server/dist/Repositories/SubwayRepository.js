@@ -9,3 +9,4 @@ async function getAllVehiclesEventSource() {
     return serverSentEvent;
 }
 exports.getAllVehiclesEventSource = getAllVehiclesEventSource;
+//# sourceMappingURL=SubwayRepository.js.map
