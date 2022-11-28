@@ -23,7 +23,7 @@ const apiOptions = {
 const mapOptions = {
   tilt: 100,
   heading: 0,
-  zoom: 18.5,
+  zoom: 18,
   center: { lat: 42.36085, lng: -71.058571 },
   mapId: MAP_ID,
 };
@@ -31,7 +31,7 @@ const mapOptions = {
 let loader = new GLTFLoader();
 
 async function initMap() {
-  let vehicleEventData = await new EventSource("http://localhost:8000/stream");
+  let vehicleEventData = await new EventSource("http://localhost:8000/subway");
 
   await vehicleEventData.addEventListener("reset", async (event) => {
     data = JSON.parse(event.data);
@@ -95,8 +95,6 @@ async function initWebGLOverlayView(map) {
       ...gl.getContextAttributes(),
     });
     renderer.autoClear = false;
-
-    let loader = new GLTFLoader();
 
     // wait to move the camera until the 3D model loads
     loader.manager.onLoad = () => {

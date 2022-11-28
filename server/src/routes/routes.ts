@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import { GetAllSubwayCarCoordinates } from '../controllers/GetAllSubwayCarCoordinates';
+import { GetAllSubwayCars } from '../controllers/GetAllSubwayCars';
 
 const router = Router();
 
-router.get('/', GetAllSubwayCarCoordinates);
+router.get('/', GetAllSubwayCars);
 
 export default router;
