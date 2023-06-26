@@ -13,6 +13,7 @@ let vehicleMarkersArray = [];
 let data;
 
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const BASE_URL = process.env.BASE_URL;
 const MAP_ID = process.env.MAP_ID;
 
 const apiOptions = {
@@ -31,7 +32,7 @@ const mapOptions = {
 let loader = new GLTFLoader();
 
 async function initMap() {
-  let vehicleEventData = await new EventSource("http://localhost:8000/subway");
+  let vehicleEventData = await new EventSource(`${BASE_URL}/subway`);
 
   await vehicleEventData.addEventListener("reset", async (event) => {
     data = JSON.parse(event.data);
