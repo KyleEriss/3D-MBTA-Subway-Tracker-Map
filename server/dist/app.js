@@ -9,9 +9,12 @@ const { PORT } = require("./config");
 const cors = require("cors");
 const routes_1 = __importDefault(require("./routes/routes"));
 const app = (0, express_1.default)();
-app.use(cors({
-    origin: "https://kyleeriss.github.io",
-}));
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://kyleeriss.github.io");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+});
 app.use("/subway", routes_1.default);
 app.listen(PORT);
 //# sourceMappingURL=app.js.map
