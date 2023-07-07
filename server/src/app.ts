@@ -6,8 +6,12 @@ import routes from "./routes/routes";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://kyleeriss.github.io",
+  })
+);
 
-app.use('/subway', routes);
+app.use("/subway", routes);
 
 app.listen(PORT);

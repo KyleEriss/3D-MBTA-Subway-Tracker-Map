@@ -9,7 +9,9 @@ const { PORT } = require("./config");
 const cors = require("cors");
 const routes_1 = __importDefault(require("./routes/routes"));
 const app = (0, express_1.default)();
-app.use(cors());
-app.use('/subway', routes_1.default);
+app.use(cors({
+    origin: "https://kyleeriss.github.io",
+}));
+app.use("/subway", routes_1.default);
 app.listen(PORT);
 //# sourceMappingURL=app.js.map
