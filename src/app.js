@@ -110,8 +110,8 @@ async function initWebGLOverlayView(map) {
         if (mapOptions.tilt < 67.5) {
           mapOptions.tilt += 0.7;
         } else if (mapOptions.heading <= 360) {
-          mapOptions.heading += 0.35;
-          mapOptions.zoom -= 0.0015;
+          mapOptions.heading += 0.50;
+          mapOptions.zoom -= 0.0035;
         } else {
           renderer.setAnimationLoop(null);
         }
