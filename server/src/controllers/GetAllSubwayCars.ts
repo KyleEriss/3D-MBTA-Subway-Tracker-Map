@@ -14,7 +14,7 @@ export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
   
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Connection", "keep-alive");
-  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Cache-Control", "no-store");
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   serverSentEvent.addEventListener("reset", async (event: any) => {

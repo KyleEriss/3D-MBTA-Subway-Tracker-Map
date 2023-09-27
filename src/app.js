@@ -32,40 +32,42 @@ const mapOptions = {
 let loader = new GLTFLoader();
 
 async function initMap() {
-  let vehicleEventData = await new EventSource(`${BASE_URL}/subway`);
+  let vehicleEventData = new EventSource(`${BASE_URL}/subway`);
 
-  await vehicleEventData.addEventListener("reset", async (event) => {
-    data = JSON.parse(event.data);
-    vehicleMarkersArray = await resetMarkersMethod(data);
+  const resetPromise = new Promise(async (resolve) => {
+    vehicleEventData.addEventListener("reset", async (event) => {
+      data = JSON.parse(event.data);
+      console.log(data);
+      vehicleMarkersArray = await resetMarkersMethod(data);
+      resolve();
+    });
   });
 
-  setTimeout(async () => {
-    console.log("timeout complete");
+  await Promise.all([resetPromise]);
 
-    vehicleEventData.addEventListener("update", async (event) => {
-      let updatedVehicle = JSON.parse(event.data);
-      vehicleMarkersArray = await updateMarkersMethod(
-        [updatedVehicle],
-        vehicleMarkersArray
-      );
-    });
+  vehicleEventData.addEventListener("update", async (event) => {
+    let updatedVehicle = JSON.parse(event.data);
+    vehicleMarkersArray = await updateMarkersMethod(
+      [updatedVehicle],
+      vehicleMarkersArray
+    );
+  });
 
-    vehicleEventData.addEventListener("add", async (event) => {
-      let addedVehicle = JSON.parse(event.data);
-      vehicleMarkersArray = await addMarkerMethod(
-        [addedVehicle],
-        vehicleMarkersArray
-      );
-    });
+  vehicleEventData.addEventListener("add", async (event) => {
+    let addedVehicle = JSON.parse(event.data);
+    vehicleMarkersArray = await addMarkerMethod(
+      [addedVehicle],
+      vehicleMarkersArray
+    );
+  });
 
-    vehicleEventData.addEventListener("remove", async (event) => {
-      let removedVehicle = JSON.parse(event.data);
-      vehicleMarkersArray = await removeMarkerMethod(
-        [removedVehicle],
-        vehicleMarkersArray
-      );
-    });
-  }, 2000);
+  vehicleEventData.addEventListener("remove", async (event) => {
+    let removedVehicle = JSON.parse(event.data);
+    vehicleMarkersArray = await removeMarkerMethod(
+      [removedVehicle],
+      vehicleMarkersArray
+    );
+  });
 
   const mapDiv = document.getElementById("map");
   const apiLoader = new Loader(apiOptions);
@@ -110,7 +112,7 @@ async function initWebGLOverlayView(map) {
         if (mapOptions.tilt < 67.5) {
           mapOptions.tilt += 0.7;
         } else if (mapOptions.heading <= 360) {
-          mapOptions.heading += 0.50;
+          mapOptions.heading += 0.5;
           mapOptions.zoom -= 0.0035;
         } else {
           renderer.setAnimationLoop(null);
@@ -155,7 +157,5 @@ async function initWebGLOverlayView(map) {
 
 (async () => {
   const map = await initMap();
-  setTimeout(() => {
-    initWebGLOverlayView(map);
-  }, 1000);
+  initWebGLOverlayView(map);
 })();

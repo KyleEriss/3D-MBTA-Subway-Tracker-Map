@@ -12,7 +12,7 @@ const GetAllSubwayCars = async (req, res, next) => {
     };
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
-    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Cache-Control", "no-store");
     res.setHeader("Access-Control-Allow-Origin", "*");
     serverSentEvent.addEventListener("reset", async (event) => {
         let data = JSON.parse(event.data);
