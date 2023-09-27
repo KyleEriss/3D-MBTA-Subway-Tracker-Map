@@ -37,7 +37,6 @@ async function initMap() {
   const resetPromise = new Promise(async (resolve) => {
     vehicleEventData.addEventListener("reset", async (event) => {
       data = JSON.parse(event.data);
-      console.log(data);
       vehicleMarkersArray = await resetMarkersMethod(data);
       resolve();
     });
