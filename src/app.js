@@ -11,6 +11,7 @@ import { loadScene } from "./LoadScene";
 
 let vehicleMarkersArray = [];
 let data;
+const loadingElement = document.getElementById("loading");
 
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 const BASE_URL = process.env.BASE_URL;
@@ -32,6 +33,7 @@ const mapOptions = {
 let loader = new GLTFLoader();
 
 async function initMap() {
+  loadingElement.removeAttribute("hidden"); // Show loading element
   let vehicleEventData = new EventSource(`${BASE_URL}/subway`);
 
   const resetPromise = new Promise(async (resolve) => {
@@ -43,6 +45,8 @@ async function initMap() {
   });
 
   await Promise.all([resetPromise]);
+  
+  loadingElement.style.display = "none";
 
   vehicleEventData.addEventListener("update", async (event) => {
     let updatedVehicle = JSON.parse(event.data);
