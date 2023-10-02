@@ -97,6 +97,15 @@ export function updateMarkersMethod(updatedVehicle, vehicles) {
 
     let vehicleToUpdate = vehicles[vehiclesIndex];
 
+    // Check if the vehicleToUpdate has an old matrix
+    if (!vehicleToUpdate.oldMatrix) {
+      // If it doesn't have an old matrix, create it and copy the current projection matrix
+      vehicleToUpdate.oldCompassBearing = vehicleToUpdate.compassBearing
+      vehicleToUpdate.oldMatrix = new THREE.Matrix4();
+      vehicleToUpdate.oldMatrix.copy(vehicleToUpdate.camera.projectionMatrix);
+    }
+
+
     vehicleToUpdate.lat = updatedVehicle.map(
       (vehicle) => vehicle.attributes.latitude
     )[0];
@@ -109,8 +118,8 @@ export function updateMarkersMethod(updatedVehicle, vehicles) {
       (vehicle) => vehicle.attributes.bearing
     )[0];
 
-    vehicleToUpdate.scene.rotation.z =
-      (vehicleToUpdate.compassBearing * Math.PI) / 180;
+    // vehicleToUpdate.scene.rotation.z =
+    //   (vehicleToUpdate.compassBearing * Math.PI) / 180;
 
     return vehicles;
   } catch (error) {
