@@ -12,7 +12,7 @@ const GetAllSubwayCars = async (req, res, next) => {
     };
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
-    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Access-Control-Allow-Origin", "*");
     serverSentEvent.addEventListener("reset", async (event) => {
         let data = JSON.parse(event.data);
@@ -35,6 +35,10 @@ const GetAllSubwayCars = async (req, res, next) => {
             res.write("event: remove\n");
             res.write("data: " + `${JSON.stringify(data)}\n\n`);
         });
+        // Close the SSE connection after 1 minute (60,000 milliseconds)
+        setTimeout(() => {
+            serverSentEvent.close();
+        }, 60000);
     }, 2000);
 };
 exports.GetAllSubwayCars = GetAllSubwayCars;

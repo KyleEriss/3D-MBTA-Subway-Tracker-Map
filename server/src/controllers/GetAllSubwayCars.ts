@@ -1,8 +1,7 @@
-import { RequestHandler } from 'express';
-import { getAllVehiclesEventSource } from '../Repositories/SubwayRepository'
+import { RequestHandler } from "express";
+import { getAllVehiclesEventSource } from "../Repositories/SubwayRepository";
 
 export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
-
   const serverSentEvent: EventSource = await getAllVehiclesEventSource();
 
   serverSentEvent.onerror = function (error: any) {
@@ -11,7 +10,7 @@ export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
   serverSentEvent.onopen = function () {
     console.log("Connected to server");
   };
-  
+
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Connection", "keep-alive");
   res.setHeader("Cache-Control", "no-cache");
@@ -39,6 +38,10 @@ export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
       res.write("event: remove\n");
       res.write("data: " + `${JSON.stringify(data)}\n\n`);
     });
+
+    // Close the SSE connection after 1 minute (60,000 milliseconds)
+    setTimeout(() => {
+      serverSentEvent.close();
+    }, 60000);
   }, 2000);
 };
-
