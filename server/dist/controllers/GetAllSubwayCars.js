@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetAllSubwayCars = void 0;
-const SubwayRepository_1 = require("../repositories/SubwayRepository");
+const SubwayRepository_1 = require("../Repositories/SubwayRepository");
 const GetAllSubwayCars = async (req, res, next) => {
     const serverSentEvent = await (0, SubwayRepository_1.getAllVehiclesEventSource)();
     serverSentEvent.onerror = function (error) {

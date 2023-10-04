@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { getAllVehiclesEventSource } from "../repositories/SubwayRepository";
+import { getAllVehiclesEventSource } from "../Repositories/SubwayRepository";
 
 export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
   const serverSentEvent: EventSource = await getAllVehiclesEventSource();
