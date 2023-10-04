@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetAllSubwayCars = void 0;
-const SubwayRepository_1 = require("../Repositories/SubwayRepository");
+const SubwayRepository_1 = require("../repositories/SubwayRepository");
 const GetAllSubwayCars = async (req, res, next) => {
     const serverSentEvent = await (0, SubwayRepository_1.getAllVehiclesEventSource)();
     serverSentEvent.onerror = function (error) {
@@ -19,27 +19,25 @@ const GetAllSubwayCars = async (req, res, next) => {
         res.write("event: reset\n");
         res.write("data: " + `${JSON.stringify(data)}\n\n`);
     });
+    serverSentEvent.addEventListener("update", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: update\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    serverSentEvent.addEventListener("add", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: add\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    serverSentEvent.addEventListener("remove", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: remove\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    // Close the SSE connection after 5 min
     setTimeout(() => {
-        serverSentEvent.addEventListener("update", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: update\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-        serverSentEvent.addEventListener("add", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: add\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-        serverSentEvent.addEventListener("remove", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: remove\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-        // Close the SSE connection after 1 minute (60,000 milliseconds)
-        setTimeout(() => {
-            serverSentEvent.close();
-        }, 60000);
-    }, 2000);
+        serverSentEvent.close();
+    }, 300000);
 };
 exports.GetAllSubwayCars = GetAllSubwayCars;
 //# sourceMappingURL=GetAllSubwayCars.js.map

@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { getAllVehiclesEventSource } from "../Repositories/SubwayRepository";
+import { getAllVehiclesEventSource } from "../repositories/SubwayRepository";
 
 export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
   const serverSentEvent: EventSource = await getAllVehiclesEventSource();
@@ -22,26 +22,24 @@ export const GetAllSubwayCars: RequestHandler = async (req, res, next) => {
     res.write("data: " + `${JSON.stringify(data)}\n\n`);
   });
 
-  setTimeout(() => {
-    serverSentEvent.addEventListener("update", (event: any) => {
-      let data = JSON.parse(event.data);
-      res.write("event: update\n");
-      res.write("data: " + `${JSON.stringify(data)}\n\n`);
-    });
-    serverSentEvent.addEventListener("add", (event: any) => {
-      let data = JSON.parse(event.data);
-      res.write("event: add\n");
-      res.write("data: " + `${JSON.stringify(data)}\n\n`);
-    });
-    serverSentEvent.addEventListener("remove", (event: any) => {
-      let data = JSON.parse(event.data);
-      res.write("event: remove\n");
-      res.write("data: " + `${JSON.stringify(data)}\n\n`);
-    });
+  serverSentEvent.addEventListener("update", (event: any) => {
+    let data = JSON.parse(event.data);
+    res.write("event: update\n");
+    res.write("data: " + `${JSON.stringify(data)}\n\n`);
+  });
+  serverSentEvent.addEventListener("add", (event: any) => {
+    let data = JSON.parse(event.data);
+    res.write("event: add\n");
+    res.write("data: " + `${JSON.stringify(data)}\n\n`);
+  });
+  serverSentEvent.addEventListener("remove", (event: any) => {
+    let data = JSON.parse(event.data);
+    res.write("event: remove\n");
+    res.write("data: " + `${JSON.stringify(data)}\n\n`);
+  });
 
-    // Close the SSE connection after 1 minute (60,000 milliseconds)
-    setTimeout(() => {
-      serverSentEvent.close();
-    }, 60000);
-  }, 2000);
+  // Close the SSE connection after 5 min
+  setTimeout(() => {
+    serverSentEvent.close();
+  }, 120000);
 };
