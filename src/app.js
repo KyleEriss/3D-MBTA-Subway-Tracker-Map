@@ -32,6 +32,10 @@ const mapOptions = {
 
 let loader = new GLTFLoader();
 
+let renderer;
+
+const animationDuration = 2000; // Duration of the animation in milliseconds
+
 async function initMap() {
   loadingElement.removeAttribute("hidden"); // Show loading element
   let vehicleEventData = new EventSource(`${BASE_URL}/subway`);
@@ -45,7 +49,7 @@ async function initMap() {
   });
 
   await Promise.all([resetPromise]);
-  
+
   loadingElement.style.display = "none";
 
   vehicleEventData.addEventListener("update", async (event) => {
@@ -79,8 +83,6 @@ async function initMap() {
 }
 
 async function initWebGLOverlayView(map) {
-  let renderer;
-
   const webGLOverlayView = new google.maps.WebGLOverlayView();
 
   webGLOverlayView.onAdd = () => {
@@ -129,25 +131,90 @@ async function initWebGLOverlayView(map) {
     let latLngAltitudeLiteral = {};
 
     for (let i = 0; i < vehicleMarkersArray.length; i++) {
-      latLngAltitudeLiteral = {
-        lat: vehicleMarkersArray[i].lat,
-        lng: vehicleMarkersArray[i].lng,
-        altitude: 90,
-      };
+      let marker = vehicleMarkersArray[i];
+      function animate() {
+        if (!marker.startTime) {
+          // This block will only execute on the first frame
+          marker.startTime = performance.now(); // Record the start time
+        }
 
-      const matrix = transformer.fromLatLngAltitude(latLngAltitudeLiteral);
-      vehicleMarkersArray[i].camera.projectionMatrix =
-        new THREE.Matrix4().fromArray(matrix);
+        // Calculate interpolation factor (t) based on time elapsed
+        let currentTime = performance.now();
+        let elapsedTime = currentTime - marker.startTime;
+        let t = Math.min(elapsedTime / animationDuration, 1); // Ensure t is between 0 and 1
+
+        // Update markers with oldMatrix property
+
+        let oldMatrix = marker.oldMatrix;
+        let newMatrix = marker.newMatrix;
+        let currentBearing = marker.oldCompassBearing; // Current compass bearing
+        let targetBearing = marker.compassBearing; // Updated compass bearing
+
+        // Interpolate between current and target bearing
+        const interpolatedBearing =
+          currentBearing * (1 - t) + targetBearing * t;
+
+        // Update the marker's rotation
+        marker.scene.rotation.z = (interpolatedBearing * Math.PI) / 180;
+
+        // Interpolate between old and new matrices
+        let interpolatedMatrix = new THREE.Matrix4();
+        for (let i = 0; i < 16; i++) {
+          let oldValue = oldMatrix.elements[i];
+          let newValue = newMatrix.elements[i];
+          interpolatedMatrix.elements[i] = oldValue * (1 - t) + newValue * t;
+        }
+
+        // Apply the interpolated matrix to the marker
+        marker.camera.projectionMatrix.copy(interpolatedMatrix);
+        marker.camera.updateMatrixWorld(true);
+
+        if (t < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          marker.startTime = null;
+          marker.oldMatrix = null;
+          marker.newMatrix = null;
+          marker.oldCompassBearing = null;
+          return;
+        }
+      }
+
+      if (vehicleMarkersArray[i].oldMatrix) {
+        latLngAltitudeLiteral = {
+          lat: vehicleMarkersArray[i].lat,
+          lng: vehicleMarkersArray[i].lng,
+          altitude: 90,
+        };
+
+        let matrix = transformer.fromLatLngAltitude(latLngAltitudeLiteral);
+        vehicleMarkersArray[i].newMatrix = new THREE.Matrix4().fromArray(
+          matrix
+        );
+
+        animate();
+      }
+
+      if (!vehicleMarkersArray[i].oldMatrix) {
+        latLngAltitudeLiteral = {
+          lat: vehicleMarkersArray[i].lat,
+          lng: vehicleMarkersArray[i].lng,
+          altitude: 90,
+        };
+
+        const matrix = transformer.fromLatLngAltitude(latLngAltitudeLiteral);
+        vehicleMarkersArray[i].camera.projectionMatrix =
+          new THREE.Matrix4().fromArray(matrix);
+      }
+      renderer.render(
+        vehicleMarkersArray[i].scene,
+        vehicleMarkersArray[i].camera
+      );
     }
 
     webGLOverlayView.requestRedraw();
     try {
-      for (let i = 0; i < vehicleMarkersArray.length; i++) {
-        renderer.render(
-          vehicleMarkersArray[i].scene,
-          vehicleMarkersArray[i].camera
-        );
-      }
+      //
     } catch (error) {
       console.log(`Renderer.render error: ${error}`);
     }
