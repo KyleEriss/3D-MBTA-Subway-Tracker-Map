@@ -118,9 +118,6 @@ export function updateMarkersMethod(updatedVehicle, vehicles) {
       (vehicle) => vehicle.attributes.bearing
     )[0];
 
-    // vehicleToUpdate.scene.rotation.z =
-    //   (vehicleToUpdate.compassBearing * Math.PI) / 180;
-
     return vehicles;
   } catch (error) {
     console.log(`updateMarkers error: ${error}`);

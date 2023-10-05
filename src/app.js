@@ -206,12 +206,10 @@ async function initWebGLOverlayView(map) {
         vehicleMarkersArray[i].camera.projectionMatrix =
           new THREE.Matrix4().fromArray(matrix);
       }
-      // for (let i = 0; i < vehicleMarkersArray.length; i++) {
       renderer.render(
         vehicleMarkersArray[i].scene,
         vehicleMarkersArray[i].camera
       );
-      // }
     }
 
     webGLOverlayView.requestRedraw();
