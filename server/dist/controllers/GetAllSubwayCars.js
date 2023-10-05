@@ -12,30 +12,32 @@ const GetAllSubwayCars = async (req, res, next) => {
     };
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Connection", "keep-alive");
-    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Access-Control-Allow-Origin", "*");
     serverSentEvent.addEventListener("reset", async (event) => {
         let data = JSON.parse(event.data);
         res.write("event: reset\n");
         res.write("data: " + `${JSON.stringify(data)}\n\n`);
     });
+    serverSentEvent.addEventListener("update", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: update\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    serverSentEvent.addEventListener("add", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: add\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    serverSentEvent.addEventListener("remove", (event) => {
+        let data = JSON.parse(event.data);
+        res.write("event: remove\n");
+        res.write("data: " + `${JSON.stringify(data)}\n\n`);
+    });
+    // Close the SSE connection after 5 min
     setTimeout(() => {
-        serverSentEvent.addEventListener("update", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: update\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-        serverSentEvent.addEventListener("add", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: add\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-        serverSentEvent.addEventListener("remove", (event) => {
-            let data = JSON.parse(event.data);
-            res.write("event: remove\n");
-            res.write("data: " + `${JSON.stringify(data)}\n\n`);
-        });
-    }, 2000);
+        serverSentEvent.close();
+    }, 300000);
 };
 exports.GetAllSubwayCars = GetAllSubwayCars;
 //# sourceMappingURL=GetAllSubwayCars.js.map
