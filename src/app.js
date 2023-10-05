@@ -34,7 +34,7 @@ let loader = new GLTFLoader();
 
 let renderer;
 
-const animationDuration = 2000; // Duration of the animation in milliseconds
+const animationDuration = 4000; // Duration of the animation in milliseconds
 
 async function initMap() {
   loadingElement.removeAttribute("hidden"); // Show loading element
@@ -206,12 +206,12 @@ async function initWebGLOverlayView(map) {
         vehicleMarkersArray[i].camera.projectionMatrix =
           new THREE.Matrix4().fromArray(matrix);
       }
-      for (let i = 0; i < vehicleMarkersArray.length; i++) {
-        renderer.render(
-          vehicleMarkersArray[i].scene,
-          vehicleMarkersArray[i].camera
-        );
-      }
+      // for (let i = 0; i < vehicleMarkersArray.length; i++) {
+      renderer.render(
+        vehicleMarkersArray[i].scene,
+        vehicleMarkersArray[i].camera
+      );
+      // }
     }
 
     webGLOverlayView.requestRedraw();
