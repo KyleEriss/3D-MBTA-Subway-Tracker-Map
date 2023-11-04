@@ -34,10 +34,10 @@ let loader = new GLTFLoader();
 
 let renderer;
 
-const animationDuration = 2000; // Duration of the animation in milliseconds
+const animationDuration = 2000;
 
 async function initMap() {
-  loadingElement.removeAttribute("hidden"); // Show loading element
+  loadingElement.removeAttribute("hidden");
   let vehicleEventData = new EventSource(`${BASE_URL}/subway`);
 
   const resetPromise = new Promise(async (resolve) => {
@@ -52,13 +52,15 @@ async function initMap() {
 
   loadingElement.style.display = "none";
 
-  vehicleEventData.addEventListener("update", async (event) => {
-    let updatedVehicle = JSON.parse(event.data);
-    vehicleMarkersArray = await updateMarkersMethod(
-      [updatedVehicle],
-      vehicleMarkersArray
-    );
-  });
+  setTimeout(async () => {
+    vehicleEventData.addEventListener("update", async (event) => {
+      let updatedVehicle = JSON.parse(event.data);
+      vehicleMarkersArray = await updateMarkersMethod(
+        [updatedVehicle],
+        vehicleMarkersArray
+      );
+    });
+  }, 2000);
 
   vehicleEventData.addEventListener("add", async (event) => {
     let addedVehicle = JSON.parse(event.data);
@@ -127,37 +129,29 @@ async function initWebGLOverlayView(map) {
   };
 
   webGLOverlayView.onDraw = ({ gl, transformer }) => {
-    // update camera matrix to ensure the model is georeferenced correctly on the map
     let latLngAltitudeLiteral = {};
 
     for (let i = 0; i < vehicleMarkersArray.length; i++) {
       let marker = vehicleMarkersArray[i];
       function animate() {
         if (!marker.startTime) {
-          // This block will only execute on the first frame
-          marker.startTime = performance.now(); // Record the start time
+          marker.startTime = performance.now();
         }
 
-        // Calculate interpolation factor (t) based on time elapsed
         let currentTime = performance.now();
         let elapsedTime = currentTime - marker.startTime;
-        let t = Math.min(elapsedTime / animationDuration, 1); // Ensure t is between 0 and 1
-
-        // Update markers with oldMatrix property
+        let t = Math.min(elapsedTime / animationDuration, 1);
 
         let oldMatrix = marker.oldMatrix;
         let newMatrix = marker.newMatrix;
-        let currentBearing = marker.oldCompassBearing; // Current compass bearing
-        let targetBearing = marker.compassBearing; // Updated compass bearing
+        let currentBearing = marker.oldCompassBearing;
+        let targetBearing = marker.compassBearing;
 
-        // Interpolate between current and target bearing
         const interpolatedBearing =
           currentBearing * (1 - t) + targetBearing * t;
 
-        // Update the marker's rotation
         marker.scene.rotation.z = (interpolatedBearing * Math.PI) / 180;
 
-        // Interpolate between old and new matrices
         let interpolatedMatrix = new THREE.Matrix4();
         for (let i = 0; i < 16; i++) {
           let oldValue = oldMatrix.elements[i];
@@ -165,7 +159,6 @@ async function initWebGLOverlayView(map) {
           interpolatedMatrix.elements[i] = oldValue * (1 - t) + newValue * t;
         }
 
-        // Apply the interpolated matrix to the marker
         marker.camera.projectionMatrix.copy(interpolatedMatrix);
         marker.camera.updateMatrixWorld(true);
 
