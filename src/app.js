@@ -144,10 +144,10 @@ async function initWebGLOverlayView(map) {
 
         let oldMatrix = marker.oldMatrix;
         let newMatrix = marker.newMatrix;
-        let currentBearing = marker.oldCompassBearing;
+        let currentBearing = marker.oldCompassBearing ?? marker.compassBearing
         let targetBearing = marker.compassBearing;
 
-        const interpolatedBearing =
+        let interpolatedBearing =
           currentBearing * (1 - t) + targetBearing * t;
 
         marker.scene.rotation.z = (interpolatedBearing * Math.PI) / 180;
@@ -168,7 +168,7 @@ async function initWebGLOverlayView(map) {
           marker.startTime = null;
           marker.oldMatrix = null;
           marker.newMatrix = null;
-          marker.oldCompassBearing = null;
+          marker.oldCompassBearing = marker.compassBearing;
           return;
         }
       }
