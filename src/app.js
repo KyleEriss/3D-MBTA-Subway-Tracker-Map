@@ -206,11 +206,6 @@ async function initWebGLOverlayView(map) {
     }
 
     webGLOverlayView.requestRedraw();
-    try {
-      //
-    } catch (error) {
-      console.log(`Renderer.render error: ${error}`);
-    }
 
     // always reset the GL state
     renderer.resetState();
