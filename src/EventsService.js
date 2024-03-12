@@ -57,7 +57,46 @@ export async function resetMarkersMethod(vehicles) {
       }
 
       camera = new THREE.PerspectiveCamera();
-      compassBearing = vehicles[i].attributes.bearing;
+
+      
+      //PARK STREET
+      if (
+        vehicles[i].relationships?.stop?.data?.id === "70075" ||
+        vehicles[i].relationships?.stop?.data?.id === "70076" ||
+        vehicles[i].relationships?.stop?.data?.id === "70196" ||
+        vehicles[i].relationships?.stop?.data?.id === "70197" ||
+        vehicles[i].relationships?.stop?.data?.id === "70198" ||
+        vehicles[i].relationships?.stop?.data?.id === "70199" ||
+        vehicles[i].relationships?.stop?.data?.id === "70200" ||
+        vehicles[i].relationships?.stop?.data?.id === "71199" &&
+        vehicles[i].attributes.current_status === "STOPPED_AT"
+      ) {
+        compassBearing = 45;
+      }
+
+      //BLOYSTON
+      if (
+        vehicles[i].relationships?.stop?.data?.id === "70158" ||
+        vehicles[i].relationships?.stop?.data?.id === "70159" &&
+        vehicles[i].attributes.current_status === "STOPPED_AT"
+      ) {
+        compassBearing = 90;
+      }
+
+      //GOVERNMENT CENTER
+      if (
+        vehicles[i].relationships?.stop?.data?.id === "70039" ||
+        vehicles[i].relationships?.stop?.data?.id === "70040" ||
+        vehicles[i].relationships?.stop?.data?.id === "70201" ||
+        vehicles[i].relationships?.stop?.data?.id === "70202" &&
+        vehicles[i].attributes.current_status === "STOPPED_AT"
+      ) {
+        compassBearing = 315;
+      }
+      else {
+        compassBearing = vehicles[i].attributes.bearing;
+      }
+
       id = vehicles[i].id;
       lat = vehicles[i].attributes.latitude;
       lng = vehicles[i].attributes.longitude;
@@ -83,6 +122,16 @@ export async function resetMarkersMethod(vehicles) {
 
 export function updateMarkersMethod(updatedVehicle, vehicles) {
   try {
+    const parkStreetStation = [
+      "70075",
+      "70076",
+      "70196",
+      "70197",
+      "70198",
+      "70199",
+      "70200",
+      "71199",
+    ];
     const updatedVehicleId = updatedVehicle
       .map((vehicle) => vehicle.id)
       .join(",");
@@ -100,11 +149,10 @@ export function updateMarkersMethod(updatedVehicle, vehicles) {
     // Check if the vehicleToUpdate has an old matrix
     if (!vehicleToUpdate.oldMatrix) {
       // If it doesn't have an old matrix, create it and copy the current projection matrix
-      vehicleToUpdate.oldCompassBearing = vehicleToUpdate.compassBearing
+      vehicleToUpdate.oldCompassBearing = vehicleToUpdate.compassBearing;
       vehicleToUpdate.oldMatrix = new THREE.Matrix4();
       vehicleToUpdate.oldMatrix.copy(vehicleToUpdate.camera.projectionMatrix);
     }
-
 
     vehicleToUpdate.lat = updatedVehicle.map(
       (vehicle) => vehicle.attributes.latitude
@@ -113,10 +161,48 @@ export function updateMarkersMethod(updatedVehicle, vehicles) {
     vehicleToUpdate.lng = updatedVehicle.map(
       (vehicle) => vehicle.attributes.longitude
     )[0];
+  
+    //PARK STREET
+    if (
+      updatedVehicle[0].relationships?.stop?.data?.id === "70075" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70076" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70196" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70197" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70198" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70199" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70200" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "71199" &&
+      updatedVehicle[0].attributes.current_status === "STOPPED_AT"
+    ) {
+      vehicleToUpdate.compassBearing = 45;
+    }
 
-    vehicleToUpdate.compassBearing = updatedVehicle.map(
-      (vehicle) => vehicle.attributes.bearing
-    )[0];
+    //BOYLSTON
+    if (
+      updatedVehicle[0].relationships?.stop?.data?.id === "70158" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70159" &&
+      updatedVehicle[0].attributes.current_status === "STOPPED_AT"
+    ) {
+      vehicleToUpdate.compassBearing = 90;
+    }
+
+    //GOVERNMENT CENTER
+    if (
+      updatedVehicle[0].relationships?.stop?.data?.id === "70039" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70040" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70201" ||
+      updatedVehicle[0].relationships?.stop?.data?.id === "70202" &&
+      updatedVehicle[0].attributes.current_status === "STOPPED_AT"
+    ) {
+      vehicleToUpdate.compassBearing = 315;
+    }
+    
+    
+    else {
+      vehicleToUpdate.compassBearing = updatedVehicle.map(
+        (vehicle) => vehicle.attributes.bearing
+      )[0];
+    }
 
     return vehicles;
   } catch (error) {
